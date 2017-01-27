@@ -51,7 +51,7 @@ node *Delete(node *root, char *word)
 		{ 
 			// replace with smallest in right subtree
 			temp = FindMin(root->right); 
-			strcpy(root->word, temp->word); // this just replaces the data
+			strncpy(root->word, temp->word, strlen(root->word)); // this just replaces the data
 			// delete (or swap again) node we just got the value from
 			root->right = Delete(root->right, root->word); 
 		}
@@ -92,7 +92,7 @@ node * Insert(node *root, char* word)
 		else
 		{
 		    root->word = calloc(strlen(word) + 1, 1);
-			strcpy(root->word, word);
+			strncpy(root->word, word, strlen(word));
 			root->left = root->right = NULL;
 		}
 	}
@@ -162,6 +162,7 @@ node *processFile(node *root, FILE *file)
         return(root);
     }
 
+    //Any file beyond the first will be handled here.
     else
     {
         node *newroot = NULL;
