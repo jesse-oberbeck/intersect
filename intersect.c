@@ -217,6 +217,7 @@ int main(int argc, char **argv)
         {
             puts("EMPTY FILE WAS GIVEN, INTERSECT IS NOTHING.");
             destroy(root);
+            fclose(file);
             exit(1);
         }
     }
