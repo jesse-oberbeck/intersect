@@ -20,6 +20,56 @@ struct Node{
 };
 typedef struct Node node;
 
+
+///////////////////////////////////////////////////////////////////////////////////
+node *FindMin(node *root)
+{
+	if(root==NULL) {return NULL; }
+	else if(root->left == NULL) {return root; }
+	else // found match
+	{ return FindMin(root->left); }
+}
+
+node *Delete(node *root, char *word)
+{
+	node *temp = NULL;
+    //printf("DELETE WORD: %s\n", word);
+	if(root==NULL)
+	{
+	    printf("Element not in tree");
+    }
+	else if(   strcasecmp(word, root->word) < 0)
+	{
+	    root->left = Delete(root->left, word);
+    }
+	else if(   strcasecmp(word, root->word) > 0)
+	{
+	    root->right = Delete(root->right, word);
+    }
+	else // found the element
+	{
+		if(root->left && root->right) // 2 kids
+		{ 
+			// replace with smallest in right subtree
+			temp = FindMin(root->right); 
+			strcpy(root->word, temp->word); // this just replaces the data
+			// delete (or swap again) node we just got the value from
+			root->right = Delete(root->right, root->word); 
+		}
+		else // one kid
+		{ 
+			temp = root;
+			root = (root->left != NULL) ? root->left : root->right;
+			free(temp->word);
+			free(temp);
+		}
+	}
+	//free(temp);
+	return root; 
+}
+/////////////////////////////////////////////////////////////////////////////////////
+
+
 FILE* openFile(char* fileName)
 {
     
@@ -35,7 +85,7 @@ node * Insert(node *root, char* word)
 {
 	if(root==NULL) 
 	{
-		root = (node *) malloc(sizeof(node));
+		root = (node *) malloc(sizeof(*root));
 
 		if(root == NULL)
 		{
@@ -65,17 +115,18 @@ node * Insert(node *root, char* word)
 
 
 void destroy(node* root){
-     if (root == NULL) // or if (!root)
-          return;
-       
-     destroy(root->left);  
-     destroy(root->right);
+    if (root == NULL) // or if (!root)
+         return;
 
-     free(root);
+    destroy(root->left);  
+    destroy(root->right);
+    free(root->word);
+    free(root);
 } 
 
 node * Find(node *root, char *word)
 {
+    //puts("\nword check: ");
 	if(root==NULL) {return NULL; }
 	if(   strcasecmp(word, root->word) < 0)
 	{
@@ -87,8 +138,8 @@ node * Find(node *root, char *word)
 	}
 	else // found match
 	{
-	    puts("match found");
-	    return NULL;
+	    //puts("match found");
+	    return root;
 	}
 }
 
@@ -98,7 +149,7 @@ node *processFile(node *root, FILE *file)
     int numWords = 0;
     node *check = NULL;
     char *word = '\0';
-    char buffer[256];
+    char buffer[256] = {'\0'};
     numWords = fscanf(file, "%s", buffer);//strtok(cursor, " ;,.\n\t");
 
     //Root should only be NULL if it's the first file.
@@ -106,7 +157,7 @@ node *processFile(node *root, FILE *file)
     {
         while(!feof(file))
         {
-            printf("!!!%s!!!\n", buffer);
+            //printf("!!!%s!!!\n", buffer);
             root = Insert(root, buffer);
             numWords = fscanf(file, "%s", buffer);//word = strtok(NULL, " ;,.\n\t");
         }
@@ -115,33 +166,35 @@ node *processFile(node *root, FILE *file)
 
     else
     {
-        node *newroot = calloc(sizeof(node *), 1);
+        node *newroot = NULL;//calloc(sizeof(node *), 1);
         while(!feof(file))
         {
             check = Find(root, buffer);
-            if(check != root)
+            root = Delete(root, buffer);
+            if(check != NULL)
             {
-                printf("!!!%s!!!\n", buffer);
-                root = Insert(newroot, buffer);
+                //printf("!!!%s!!!\n", buffer);
+                newroot = Insert(newroot, buffer);
                 
             }
             numWords = fscanf(file, "%s", buffer);
         }
         destroy(root);
+        //if(!newroot){puts("NO NEW ROOT");}
     return(newroot);
     }
-}//CURRENT ISSUE: it looks like newroot is not being passed correctly to Insert. Segfaults on line 54, the first compare. It's doing that thing where it's not getting a good copy of the struct again.
+}
 
 void inOrder(node *root){
-    puts("loop");
-     if (root == NULL) // or if (!root)
-          return;
+    if (root == NULL) // or if (!root)
+    {
+        //puts("NO ROOT IN PRINT");
+        return;
+    }
     inOrder(root->left);
     printf("%s\n", root->word);
     inOrder(root->right);
 }
-
-
 
 int main(int argc, char **argv)
 {
@@ -163,7 +216,9 @@ int main(int argc, char **argv)
         }
         puts("NEW FILE");
         root = processFile(root, file);
+        fclose(file);
     }
     puts("inorder time");
     inOrder(root);
+    destroy(root);
 }
