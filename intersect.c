@@ -2,16 +2,6 @@
 #include <stdlib.h>
 #include <strings.h>
 #include <string.h>
-//#include "BST.c" //Pre-existing work from class/instructor.
-
-//open file handle, strtok through file. for each word, use
-//strcasecmp to decide where the word goes in the tree
-
-//once the tree is made, move to next file. open new pointer.
-//tokenize, going over each word, and do the same string compare
-
-//adjust insert to skip the word if the comparison returns 0.
-
 
 struct Node{
     char *word;
@@ -24,10 +14,18 @@ typedef struct Node node;
 ///////////////////////////////////////////////////////////////////////////////////
 node *FindMin(node *root)
 {
-	if(root==NULL) {return NULL; }
-	else if(root->left == NULL) {return root; }
+	if(root==NULL)
+	{
+	    return NULL;
+	}
+	else if(root->left == NULL)
+	{
+	    return root;
+	}
 	else // found match
-	{ return FindMin(root->left); }
+	{ 
+	    return FindMin(root->left);
+	}
 }
 
 node *Delete(node *root, char *word)
@@ -65,7 +63,6 @@ node *Delete(node *root, char *word)
 			free(temp);
 		}
 	}
-	//free(temp);
 	return root; 
 }
 /////////////////////////////////////////////////////////////////////////////////////
@@ -77,7 +74,6 @@ FILE* openFile(char* fileName)
     char file[255];
     char *path = getenv("HOME");
     sprintf(file, "%s%s", path, fileName);
-    //printf("%s\n", fileName);
     return(fopen(fileName, "r"));
 }
 
@@ -127,7 +123,6 @@ void destroy(node* root){
 
 node * Find(node *root, char *word)
 {
-    //puts("\nword check: ");
 	if(root==NULL) {return NULL; }
 	if(   strcasecmp(word, root->word) < 0)
 	{
@@ -139,20 +134,18 @@ node * Find(node *root, char *word)
 	}
 	else // found match
 	{
-	    //puts("match found");
 	    return root;
 	}
 }
 
 node *processFile(node *root, FILE *file)
 {
-    //char *cursor = file;
     int numWords = 0;
     node *check = NULL;
-    char *word = '\0';
+    //char *word = '\0';
     char buffer[256] = {'\0'};
-    numWords = fscanf(file, "%s", buffer);//strtok(cursor, " ;,.\n\t");
-    if(buffer[0] == NULL)
+    numWords = fscanf(file, "%s", buffer);
+    if(numWords == 0)
     {
         puts("EMPTY FILE!");
         destroy(root);
@@ -163,30 +156,27 @@ node *processFile(node *root, FILE *file)
     {
         while(!feof(file))
         {
-            //printf("!!!%s!!!\n", buffer);
             root = Insert(root, buffer);
-            numWords = fscanf(file, "%s", buffer);//word = strtok(NULL, " ;,.\n\t");
+            numWords = fscanf(file, "%s", buffer);
         }
         return(root);
     }
 
     else
     {
-        node *newroot = NULL;//calloc(sizeof(node *), 1);
+        node *newroot = NULL;
         while(!feof(file))
         {
             check = Find(root, buffer);
             root = Delete(root, buffer);
             if(check != NULL)
             {
-                //printf("!!!%s!!!\n", buffer);
                 newroot = Insert(newroot, buffer);
                 
             }
             numWords = fscanf(file, "%s", buffer);
         }
         destroy(root);
-        //if(!newroot){puts("NO NEW ROOT");}
     return(newroot);
     }
 }
@@ -211,7 +201,6 @@ int main(int argc, char **argv)
     }
     node *root = NULL;
     FILE *file;
-    int numFiles = argc;
     for(int i = 1; i < argc; ++i)
     {
         file = openFile(argv[i]);
