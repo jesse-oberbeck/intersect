@@ -1,7 +1,7 @@
-Name:
-Date:
-Current Module:
-Project Name:
+Name: SGT Schoenwald-Oberbeck, Jesse
+Date: 27JAN2016
+Current Module: Data Structures and Algorhythms
+Project Name: Intersect
 
 	Project Goals:
   Create a file that takes in n files, finds the words they have in common(the intersect), and prints them out in alphabetical order. The program should not crash when large files are used, and should work as quickly as manageable.
