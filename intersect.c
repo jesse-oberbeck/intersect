@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <strings.h>
 #include <string.h>
 //#include "BST.c" //Pre-existing work from class/instructor.
 
@@ -18,11 +19,6 @@ struct Node{
     struct Node *right;
 };
 typedef struct Node node;
-
-int wordCompare(char* word)
-{
-    return(0);
-}
 
 FILE* openFile(char* fileName)
 {
@@ -68,6 +64,16 @@ node * Insert(node *root, char* word)
 }
 
 
+void destroy(node* root){
+     if (root == NULL) // or if (!root)
+          return;
+       
+     destroy(root->left);  
+     destroy(root->right);
+
+     free(root);
+} 
+
 node * Find(node *root, char *word)
 {
 	if(root==NULL) {return NULL; }
@@ -77,18 +83,21 @@ node * Find(node *root, char *word)
 	}
 	else if(   strcasecmp(word, root->word) > 0)
 	{
-	    return Find(root->left, word);
+	    return Find(root->right, word);
 	}
 	else // found match
-	{ return root; }
+	{
+	    puts("match found");
+	    return NULL;
+	}
 }
 
 node *processFile(node *root, FILE *file)
 {
     //char *cursor = file;
     int numWords = 0;
-    node *check;
-    char *word;
+    node *check = NULL;
+    char *word = '\0';
     char buffer[256];
     numWords = fscanf(file, "%s", buffer);//strtok(cursor, " ;,.\n\t");
 
@@ -106,21 +115,22 @@ node *processFile(node *root, FILE *file)
 
     else
     {
-        node *newroot;
+        node *newroot = calloc(sizeof(node *), 1);
         while(!feof(file))
         {
-            check = Find(root, word);
+            check = Find(root, buffer);
             if(check != root)
             {
                 printf("!!!%s!!!\n", buffer);
-                root = Insert(root, buffer);
+                root = Insert(newroot, buffer);
                 
             }
             numWords = fscanf(file, "%s", buffer);
         }
+        destroy(root);
     return(newroot);
     }
-}
+}//CURRENT ISSUE: it looks like newroot is not being passed correctly to Insert. Segfaults on line 54, the first compare. It's doing that thing where it's not getting a good copy of the struct again.
 
 void inOrder(node *root){
     puts("loop");
