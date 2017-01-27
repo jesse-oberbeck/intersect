@@ -4,6 +4,7 @@
 
 int main(int argc, char **argv)
 {
+    //Check for sufficient arguments/files.
     if(argc < 2)
     {
         puts("Not enough arguments.");
@@ -11,6 +12,9 @@ int main(int argc, char **argv)
     }
     node *root = NULL;
     FILE *file;
+
+    //Loop through every file in argv. Checks for empty files,
+    //calling the required functions to handle each.
     for(int i = 1; i < argc; ++i)
     {
         file = openFile(argv[i]);
@@ -19,7 +23,6 @@ int main(int argc, char **argv)
             printf("No file.\n");
             return(1);
         }
-        //puts("NEW FILE");
         root = processFile(root, file);
         fclose(file);
         if(root == NULL)
@@ -30,7 +33,6 @@ int main(int argc, char **argv)
             exit(1);
         }
     }
-    //puts("inorder time");
-    inOrder(root);
+    printTree(root);
     destroy(root);
 }

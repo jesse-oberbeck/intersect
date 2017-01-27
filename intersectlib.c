@@ -5,11 +5,9 @@
 #include "intersectlib.h"
 
 
-
-
-///////////////////////////////////////////////////////////////////////////////////
 node *FindMin(node *root)
 {
+    //Function taken and modified from BST exercise done in class.
 	if(root==NULL)
 	{
 	    return NULL;
@@ -26,9 +24,8 @@ node *FindMin(node *root)
 
 node *Delete(node *root, char *word)
 {
+    //Function taken and modified from BST exercise done in class.
 	node *temp = NULL;
-    //printf("DELETE WORD: %s\n", word);
-    
 	if(root==NULL)
 	{
 	    return root;
@@ -76,6 +73,7 @@ FILE* openFile(char* fileName)
 
 node * Insert(node *root, char* word)
 {
+    //Function taken and modified from BST exercise done in class.
 	if(root==NULL) 
 	{
 		root = (node *) malloc(sizeof(*root));
@@ -109,6 +107,7 @@ node * Insert(node *root, char* word)
 
 void destroy(node* root)
 {
+    //Function taken and modified from BST exercise done in class.
     if (root == NULL) // or if (!root)
          return;
 
@@ -120,7 +119,11 @@ void destroy(node* root)
 
 node * Find(node *root, char *word)
 {
-	if(root==NULL) {return NULL; }
+    //Function taken and modified from BST exercise done in class.
+	if(root==NULL)
+	{
+	    return NULL;
+    }
 	if(   strcasecmp(word, root->word) < 0)
 	{
 	    return Find(root->left, word);
@@ -129,7 +132,7 @@ node * Find(node *root, char *word)
 	{
 	    return Find(root->right, word);
 	}
-	else // found match
+	else //match found
 	{
 	    return root;
 	}
@@ -179,14 +182,13 @@ node *processFile(node *root, FILE *file)
     }
 }
 
-void inOrder(node *root)
+void printTree(node *root)
 {
-    if (root == NULL) // or if (!root)
+    if (root == NULL)
     {
-        //puts("NO ROOT IN PRINT");
         return;
     }
-    inOrder(root->left);
+    printTree(root->left);
     printf("%s\n", root->word);
-    inOrder(root->right);
+    printTree(root->right);
 }

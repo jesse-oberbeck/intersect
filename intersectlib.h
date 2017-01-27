@@ -19,4 +19,4 @@ node * Find(node *root, char *word);
 
 node *processFile(node *root, FILE *file);
 
-void inOrder(node *root);
+void printTree(node *root);
