@@ -1,22 +1,35 @@
-struct Node{
+struct Node
+{
     char *word;
     struct Node *left;
     struct Node *right;
 };
 typedef struct Node node;
 
-node *FindMin(node *root);
+node *FindMin(
+    node * root);
 
-node *Delete(node *root, char *word);
+node *Delete(
+    node * root,
+    char *word);
 
-FILE* openFile(char* fileName);
+FILE *openFile(
+    char *fileName);
 
-node * Insert(node *root, char* word);
+node *Insert(
+    node * root,
+    char *word);
 
-void destroy(node* root);
+void destroy(
+    node * root);
 
-node * Find(node *root, char *word);
+node *Find(
+    node * root,
+    char *word);
 
-node *processFile(node *root, FILE *file);
+node *processFile(
+    node * root,
+    FILE * file);
 
-void printTree(node *root);
+void printTree(
+    node * root);

@@ -2,30 +2,33 @@
 #include <stdlib.h>
 #include "intersectlib.h"
 
-int main(int argc, char **argv)
+int
+main(
+    int argc,
+    char **argv)
 {
     //Check for sufficient arguments/files.
-    if(argc < 2)
+    if (argc < 2)
     {
         puts("Not enough arguments.");
-        return(1);
+        return (1);
     }
     node *root = NULL;
     FILE *file;
 
     //Loop through every file in argv. Checks for empty files,
     //calling the required functions to handle each.
-    for(int i = 1; i < argc; ++i)
+    for (int i = 1; i < argc; ++i)
     {
         file = openFile(argv[i]);
-        if(!file)
+        if (!file)
         {
             printf("No file.\n");
-            return(1);
+            return (1);
         }
         root = processFile(root, file);
         fclose(file);
-        if(root == NULL)
+        if (root == NULL)
         {
             puts("EMPTY FILE WAS GIVEN, INTERSECT IS NOTHING.");
             destroy(root);
