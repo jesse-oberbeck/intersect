@@ -34,9 +34,10 @@ node *Delete(node *root, char *word)
 {
 	node *temp = NULL;
     //printf("DELETE WORD: %s\n", word);
+    
 	if(root==NULL)
 	{
-	    printf("Element not in tree");
+	    return root;
     }
 	else if(   strcasecmp(word, root->word) < 0)
 	{
@@ -151,7 +152,12 @@ node *processFile(node *root, FILE *file)
     char *word = '\0';
     char buffer[256] = {'\0'};
     numWords = fscanf(file, "%s", buffer);//strtok(cursor, " ;,.\n\t");
-
+    if(buffer[0] == NULL)
+    {
+        puts("EMPTY FILE!");
+        destroy(root);
+        return(NULL);
+    }
     //Root should only be NULL if it's the first file.
     if(root == NULL)
     {
@@ -214,11 +220,17 @@ int main(int argc, char **argv)
             printf("No file.\n");
             return(1);
         }
-        puts("NEW FILE");
+        //puts("NEW FILE");
         root = processFile(root, file);
         fclose(file);
+        if(root == NULL)
+        {
+            puts("EMPTY FILE WAS GIVEN, INTERSECT IS NOTHING.");
+            destroy(root);
+            exit(1);
+        }
     }
-    puts("inorder time");
+    //puts("inorder time");
     inOrder(root);
     destroy(root);
 }
