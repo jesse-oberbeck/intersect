@@ -36,6 +36,8 @@ main(
             exit(1);
         }
     }
+    avl_balance(root);
     printTree(root);
+    printf("height: %zd\n",tree_height(root));
     destroy(root);
 }
